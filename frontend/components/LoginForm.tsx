@@ -45,7 +45,7 @@ export default function LoginForm() {
     <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4">
       <div className="card-dark w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">ASTRA ERP</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">ERP</h1>
           <p className="text-gray-400">Manager Attendance Portal</p>
         </div>
 
@@ -86,11 +86,6 @@ export default function LoginForm() {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-
-        <div className="mt-6 pt-6 border-t border-[#333333]">
-          <p className="text-gray-400 text-sm text-center mb-2">Manager Demo Credentials:</p>
-          <p className="text-xs text-gray-500 text-center">manager1 / pass123</p>
-        </div>
       </div>
     </div>
   );
