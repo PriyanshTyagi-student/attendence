@@ -43,7 +43,7 @@ export default function Navbar({ userName }: NavbarProps) {
     <nav className="bg-[#1a1a1a] border-b border-[#333333] px-6 py-4">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-white font-bold text-lg">ASTRA ERP</h1>
+          <h1 className="text-white font-bold text-lg">ERP</h1>
           <p className="text-gray-400 text-sm">Welcome, {userName}</p>
         </div>
 

@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginUser } from '@/lib/api';
 
+const managerDemoUser = process.env.NEXT_PUBLIC_MANAGER_DEMO_USER || 'manager1';
+const managerDemoPassword = process.env.NEXT_PUBLIC_MANAGER_DEMO_PASSWORD || 'pass123';
+
 export default function LoginForm() {
   const router = useRouter();
   const [userId, setUserId] = useState('');
@@ -86,6 +89,13 @@ export default function LoginForm() {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
+
+        <div className="mt-6 pt-6 border-t border-[#333333]">
+          <p className="text-gray-400 text-sm text-center mb-2">Manager Demo Credentials:</p>
+          <p className="text-xs text-gray-500 text-center">
+            {managerDemoUser} / {managerDemoPassword}
+          </p>
+        </div>
       </div>
     </div>
   );

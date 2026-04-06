@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { loginUser } from '@/lib/api';
 
+const adminDemoUser = process.env.NEXT_PUBLIC_ADMIN_DEMO_USER || 'admin';
+const adminDemoPassword = process.env.NEXT_PUBLIC_ADMIN_DEMO_PASSWORD || 'admin123';
+
 export default function LoginForm() {
   const router = useRouter();
   const [userId, setUserId] = useState('');
@@ -89,7 +92,9 @@ export default function LoginForm() {
 
         <div className="mt-6 pt-6 border-t border-[#333333]">
           <p className="text-gray-400 text-sm text-center mb-2">Admin Demo Credentials:</p>
-          <p className="text-xs text-gray-500 text-center">admin / admin123</p>
+          <p className="text-xs text-gray-500 text-center">
+            {adminDemoUser} / {adminDemoPassword}
+          </p>
         </div>
       </div>
     </div>

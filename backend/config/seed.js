@@ -2,21 +2,25 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Employee = require('../models/Employee');
 
+const adminSeedUser = {
+  userId: process.env.ADMIN_USER_ID || 'admin',
+  email: process.env.ADMIN_EMAIL || 'admin@erp.local',
+  name: process.env.ADMIN_NAME || 'Admin User',
+  password: process.env.ADMIN_PASSWORD || 'admin123',
+  role: 'admin',
+};
+
+const managerSeedUser = {
+  userId: process.env.MANAGER_USER_ID || 'manager1',
+  email: process.env.MANAGER_EMAIL || 'manager1@erp.local',
+  name: process.env.MANAGER_NAME || 'John Manager',
+  password: process.env.MANAGER_PASSWORD || 'pass123',
+  role: 'manager',
+};
+
 const defaultUsers = [
-  {
-    userId: 'admin',
-    email: 'admin@erp.local',
-    name: 'Admin User',
-    password: 'admin123',
-    role: 'admin',
-  },
-  {
-    userId: 'manager1',
-    email: 'manager1@erp.local',
-    name: 'John Manager',
-    password: 'pass123',
-    role: 'manager',
-  },
+  adminSeedUser,
+  managerSeedUser,
 ];
 
 const defaultEmployees = [
