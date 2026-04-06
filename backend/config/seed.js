@@ -40,9 +40,14 @@ async function seedUsers() {
   for (const user of defaultUsers) {
     const hashedPassword = await bcrypt.hash(user.password, 10);
     await User.updateOne(
-      { userId: user.userId },
       {
-        $setOnInsert: {
+        $or: [
+          { userId: user.userId },
+          { email: user.email },
+        ],
+      },
+      {
+        $set: {
           ...user,
           password: hashedPassword,
         },
