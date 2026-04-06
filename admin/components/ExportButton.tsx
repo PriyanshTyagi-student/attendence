@@ -6,11 +6,13 @@ import { exportAttendance } from '@/lib/api';
 interface ExportButtonProps {
   records: AttendanceRecord[];
   selectedDate?: string;
+  selectedCategory?: 'labor' | 'staff' | '';
 }
 
 export default function ExportButton({
   records,
   selectedDate,
+  selectedCategory,
 }: ExportButtonProps) {
   const handleExport = async () => {
     try {
@@ -19,11 +21,12 @@ export default function ExportButton({
         throw new Error('Unauthorized: please login again');
       }
 
-      const blob = await exportAttendance(token, selectedDate);
+      const blob = await exportAttendance(token, selectedDate, selectedCategory || undefined);
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `attendance_export_${new Date().toISOString().split('T')[0]}.xlsx`;
+      const categoryLabel = selectedCategory ? `_${selectedCategory}` : '';
+      link.download = `attendance_export${categoryLabel}_${new Date().toISOString().split('T')[0]}.xlsx`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

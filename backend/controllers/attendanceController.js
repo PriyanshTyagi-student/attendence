@@ -82,7 +82,7 @@ async function markAttendance(req, res) {
 
 async function getAttendance(req, res) {
   try {
-    const { date, employeeId } = req.query;
+    const { date, employeeId, category } = req.query;
     const filter = {};
 
     if (date) {
@@ -97,13 +97,21 @@ async function getAttendance(req, res) {
       filter.employeeId = employeeId;
     }
 
-    const attendance = await Attendance.find(filter).sort({ date: -1, employeeId: 1 }).lean();
+    let attendance = await Attendance.find(filter).sort({ date: -1, employeeId: 1 }).lean();
     const employeeIds = [...new Set(attendance.map((item) => item.employeeId))];
     const employees = await Employee.find(
       { employeeId: { $in: employeeIds } },
       { employeeId: 1, name: 1, category: 1, _id: 0 }
     ).lean();
     const employeeMap = new Map(employees.map((emp) => [emp.employeeId, emp]));
+
+    // Filter by category if provided
+    if (category) {
+      attendance = attendance.filter((item) => {
+        const employee = employeeMap.get(item.employeeId);
+        return employee?.category === category;
+      });
+    }
 
     const mapped = attendance.map((item) => {
       const employee = employeeMap.get(item.employeeId);
@@ -218,7 +226,7 @@ async function deleteAttendance(req, res) {
 
 async function exportAttendance(req, res) {
   try {
-    const { date } = req.query;
+    const { date, category } = req.query;
     const filter = {};
 
     if (date) {
@@ -235,11 +243,19 @@ async function exportAttendance(req, res) {
     const employees = await Employee.find({ employeeId: { $in: employeeIds } }, { employeeId: 1, name: 1, category: 1, _id: 0 }).lean();
     const employeeMap = new Map(employees.map((emp) => [emp.employeeId, emp]));
 
-    const uniqueDates = [...new Set(records.map((record) => record.date))]
+    // Filter by category if provided
+    const filteredRecords = category 
+      ? records.filter((record) => {
+          const employee = employeeMap.get(record.employeeId);
+          return employee?.category === category;
+        })
+      : records;
+
+    const uniqueDates = [...new Set(filteredRecords.map((record) => record.date))]
       .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 
     const groupedByEmployee = new Map();
-    records.forEach((record) => {
+    filteredRecords.forEach((record) => {
       if (!groupedByEmployee.has(record.employeeId)) {
         const employee = employeeMap.get(record.employeeId);
         groupedByEmployee.set(record.employeeId, {

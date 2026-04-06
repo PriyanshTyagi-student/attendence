@@ -18,6 +18,7 @@ export default function ManagerDashboard() {
   const [token, setToken] = useState<string>('');
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedCategory, setSelectedCategory] = useState<'labor' | 'staff' | ''>('');
   const [attendanceData, setAttendanceData] = useState<Record<string, AttendanceEntry>>({});
   const [submissionStatus, setSubmissionStatus] = useState<SubmissionStatus>({});
   const [loading, setLoading] = useState(true);
@@ -161,7 +162,9 @@ export default function ManagerDashboard() {
   }
 
   const isLocked = submissionStatus[selectedDate] || false;
-  const activeEmployees = employees;
+  const activeEmployees = selectedCategory 
+    ? employees.filter((emp) => emp.category === selectedCategory)
+    : employees;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
@@ -173,17 +176,32 @@ export default function ManagerDashboard() {
 
           <div className="card-dark mb-6">
             <div className="flex items-center justify-between mb-6">
-              <div>
-                <label className="block text-white text-sm font-medium mb-2">
-                  Select Date
-                </label>
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={handleDateChange}
-                  disabled={isLocked}
-                  className="bg-[#1a1a1a] border border-[#333333] text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                />
+              <div className="flex gap-4">
+                <div>
+                  <label className="block text-white text-sm font-medium mb-2">
+                    Select Date
+                  </label>
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    className="bg-[#1a1a1a] border border-[#333333] text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-white text-sm font-medium mb-2">
+                    Filter by Category
+                  </label>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value as 'labor' | 'staff' | '')}
+                    className="bg-[#1a1a1a] border border-[#333333] text-white px-4 py-2 rounded-lg focus:outline-none focus:border-red-600"
+                  >
+                    <option value="">All Categories</option>
+                    <option value="labor">Labor</option>
+                    <option value="staff">Staff</option>
+                  </select>
+                </div>
               </div>
 
               {isLocked && (

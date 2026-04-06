@@ -48,6 +48,7 @@ export async function getAttendance(token, query = {}) {
   const params = new URLSearchParams();
   if (query.date) params.set('date', query.date);
   if (query.employeeId) params.set('employeeId', query.employeeId);
+  if (query.category) params.set('category', query.category);
 
   const qs = params.toString();
   const data = await request(`/attendance${qs ? `?${qs}` : ''}`, {

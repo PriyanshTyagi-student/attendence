@@ -12,6 +12,7 @@ export default function ExportPage() {
   const router = useRouter();
   const [user, setUser] = useState<{ userId: string; name: string; role: string } | null>(null);
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<'labor' | 'staff' | ''>('');
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -31,7 +32,9 @@ export default function ExportPage() {
     setUser(parsedUser);
     void (async () => {
       try {
-        const data = await getAttendance(storedToken);
+        const data = await getAttendance(storedToken, {
+          category: selectedCategory || undefined,
+        });
         setRecords(data);
       } catch {
         localStorage.removeItem('user');
@@ -39,7 +42,7 @@ export default function ExportPage() {
         router.push('/');
       }
     })();
-  }, [router]);
+  }, [router, selectedCategory]);
 
   if (!user) return null;
 
@@ -53,8 +56,22 @@ export default function ExportPage() {
           <h2 className="text-white text-3xl font-bold mb-6">Export Attendance</h2>
 
           <div className="card-dark">
-            <p className="text-gray-300 mb-4">Export attendance records to Excel in horizontal date format.</p>
-            <ExportButton records={records} />
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-4">
+              <div>
+                <label className="block text-gray-400 text-sm font-medium mb-2">Filter by Category</label>
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value as 'labor' | 'staff' | '')}
+                  className="px-3 py-2 bg-gray-800 text-white border border-gray-600 rounded hover:border-blue-400 transition-colors"
+                >
+                  <option value="">All Categories</option>
+                  <option value="labor">Labor</option>
+                  <option value="staff">Staff</option>
+                </select>
+              </div>
+              <ExportButton records={records} selectedCategory={selectedCategory} />
+            </div>
+            <p className="text-gray-300">Export attendance records to Excel in horizontal date format.</p>
           </div>
         </main>
       </div>

@@ -44,10 +44,50 @@ export async function getEmployees(token) {
   }));
 }
 
+export async function createEmployee(token, payload) {
+  const data = await request('/employees', {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify(payload),
+  });
+
+  return {
+    id: data.employeeId,
+    name: data.name,
+    department: data.department,
+    role: 'employee',
+    category: data.category || 'staff',
+  };
+}
+
+export async function updateEmployee(token, employeeId, payload) {
+  const data = await request(`/employees/${employeeId}`, {
+    method: 'PUT',
+    headers: authHeaders(token),
+    body: JSON.stringify(payload),
+  });
+
+  return {
+    id: data.employeeId,
+    name: data.name,
+    department: data.department,
+    role: 'employee',
+    category: data.category || 'staff',
+  };
+}
+
+export async function deleteEmployee(token, employeeId) {
+  return request(`/employees/${employeeId}`, {
+    method: 'DELETE',
+    headers: authHeaders(token),
+  });
+}
+
 export async function getAttendance(token, query = {}) {
   const params = new URLSearchParams();
   if (query.date) params.set('date', query.date);
   if (query.employeeId) params.set('employeeId', query.employeeId);
+  if (query.category) params.set('category', query.category);
 
   const qs = params.toString();
   const data = await request(`/attendance${qs ? `?${qs}` : ''}`, {
@@ -122,9 +162,13 @@ export async function deleteAttendance(token, id) {
   });
 }
 
-export async function exportAttendance(token, date) {
-  const query = date ? `?date=${encodeURIComponent(date)}` : '';
-  const response = await fetch(`${API_URL}/attendance/export${query}`, {
+export async function exportAttendance(token, date, category) {
+  const params = new URLSearchParams();
+  if (date) params.set('date', date);
+  if (category) params.set('category', category);
+  
+  const query = params.toString();
+  const response = await fetch(`${API_URL}/attendance/export${query ? `?${query}` : ''}`, {
     method: 'GET',
     headers: {
       ...authHeaders(token),
