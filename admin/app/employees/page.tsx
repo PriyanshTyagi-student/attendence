@@ -163,7 +163,7 @@ export default function EmployeesPage() {
                 </div>
 
                 <div>
-                  <label className="block text-white text-sm font-medium mb-2">Department</label>
+                  <label className="block text-white text-sm font-medium mb-2">Designation</label>
                   <input
                     type="text"
                     value={formData.department}
